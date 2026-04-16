@@ -26,18 +26,28 @@ namespace Player.States
         {
             base.Enter();
             playerModel.PlayerStateAnimation("Aiming");
+            if (IsBeControl())
+            {
+                playerController.EnterAim();
+            }
             playerController.EnterAim();
         }
         public override void Exit()
         {
             base.Exit();
-            playerController.ExitAim(); // <--- 加上这句，退出状态时恢复正常相机
+            if(IsBeControl())
+                playerController.ExitAim(); // <--- 加上这句，退出状态时恢复正常相机
         }
         public override void Update()
         {
             base.Update();
+            if(IsBeControl()){
+                //让模型旋转至摄像机方向
+                if (Camera.main != null)
+                    playerModel.transform.rotation =
+                        Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
 
-            #region 玩家松开鼠标右键后恢复正常状态
+                #region 玩家松开鼠标右键后恢复正常状态
 
             if (!playerController._isAiming)
             {
@@ -54,6 +64,7 @@ namespace Player.States
             playerModel.animator.SetFloat(_aimingXHash, _aimingX);
             playerModel.animator.SetFloat(_aimingYHash, _aimingY);
             #endregion
+            }
         }
     }
 }
