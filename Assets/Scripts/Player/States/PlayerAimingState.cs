@@ -32,6 +32,16 @@ namespace Player.States
         {
             base.Update();
 
+            #region 玩家松开鼠标右键后恢复正常状态
+
+            if (!playerController._isAiming)
+            {
+                playerModel.SwitchState(PlayerState.Idle);
+            }
+            
+
+                #endregion
+
             #region 处理角色的移动输入
 
             _aimingX = Mathf.Lerp(_aimingX, playerController._moveInput.x, _transitionSpeed);

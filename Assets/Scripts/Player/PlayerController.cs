@@ -55,7 +55,7 @@ namespace Player
             // 如果场景中存在主相机，则获取其变换组件
             if (Camera.main != null) _cameraTransform = Camera.main.transform;
             Cursor.lockState = CursorLockMode.Locked;
-            ExitAim();
+            
         }
 
         /// <summary>
