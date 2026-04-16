@@ -12,7 +12,7 @@ namespace Player.States
         private int _aimingYHash;
         private float _aimingX = 0;
         private float _aimingY = 0;
-        private float _transitionSpeed = 5;
+        private float _transitionSpeed = 8;
         #endregion
 
         public override void Init(IStateMachineOwner owner)
@@ -26,8 +26,13 @@ namespace Player.States
         {
             base.Enter();
             playerModel.PlayerStateAnimation("Aiming");
+            playerController.EnterAim();
         }
-
+        public override void Exit()
+        {
+            base.Exit();
+            playerController.ExitAim(); // <--- 加上这句，退出状态时恢复正常相机
+        }
         public override void Update()
         {
             base.Update();
@@ -41,11 +46,11 @@ namespace Player.States
             
 
                 #endregion
-
+            
             #region 处理角色的移动输入
 
-            _aimingX = Mathf.Lerp(_aimingX, playerController._moveInput.x, _transitionSpeed);
-            _aimingY = Mathf.Lerp(_aimingY, playerController._moveInput.y, _transitionSpeed);
+            _aimingX = Mathf.Lerp(_aimingX, playerController._moveInput.x, _transitionSpeed * Time.deltaTime);
+            _aimingY = Mathf.Lerp(_aimingY, playerController._moveInput.y, _transitionSpeed * Time.deltaTime);
             playerModel.animator.SetFloat(_aimingXHash, _aimingX);
             playerModel.animator.SetFloat(_aimingYHash, _aimingY);
             #endregion

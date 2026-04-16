@@ -53,12 +53,11 @@ namespace Player
             #endregion
 
             #region 瞄准监听
-
-            if (playerController._isAiming)
+// 添加条件：如果你已经处于瞄准状态，就不要再重复请求切换了
+            if (playerController._isAiming && !(this is Player.States.PlayerAimingState))
             {
                 playerModel.SwitchState(PlayerState.Aiming);
             }
-
             #endregion
         }
 
