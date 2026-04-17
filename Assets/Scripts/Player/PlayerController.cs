@@ -1,7 +1,8 @@
-﻿using System;
+﻿
 using Base;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Player
 {
@@ -27,6 +28,23 @@ namespace Player
         public bool _isSprint;//是否冲刺，标记玩家当前是否处于冲刺状态
         public bool _isJumping;//是否跳跃，标记玩家当前是否按下跳跃键
         public bool _isAiming;//是否瞄准，标记玩家当前是否处于瞄准状态
+        public bool _isFire;
+        #endregion
+
+        #region 瞄准目标
+
+        #region 开火抖动
+        private CinemachineImpulseSource _impulseSource;
+        
+
+        #endregion
+        [Tooltip("瞄准目标")]
+        public Transform aimTarget;
+        [Tooltip("射线检测最大距离")]
+        public float maxRayDistance = 1000f;
+
+        [Tooltip("射线检测的层级")]
+        public LayerMask aimLayerMask = ~0;
         #endregion
         
         [Tooltip("转向速度")]
@@ -56,6 +74,7 @@ namespace Player
             if (Camera.main != null) _cameraTransform = Camera.main.transform;
             Cursor.lockState = CursorLockMode.Locked;
             ExitAim();
+            _impulseSource = aimingCamera.GetComponent<CinemachineImpulseSource>();
         }
 
         /// <summary>
@@ -94,6 +113,8 @@ namespace Player
             
             // 检测跳跃按键是否被按下
             _isJumping = _inputSystem.Player.IsJumping.IsPressed();
+            
+            _isFire = _inputSystem.Player.Fire.IsPressed();
             #endregion
 
             #region 计算玩家的移动方向
@@ -115,18 +136,34 @@ namespace Player
         {
             freeLookCamera.m_XAxis.Value = aimingCamera.m_XAxis.Value;
             freeLookCamera.m_YAxis.Value = aimingCamera.m_YAxis.Value;
-            
+            //关闭瞄准约束
+            currentPlayerModel.rightHandAimConstraint.weight = 0;
+            currentPlayerModel.bodyAimConstraint.weight = 0;
+            currentPlayerModel.rightHandConstraint.weight = 1;
             freeLookCamera.Priority = 100;
             aimingCamera.Priority = 0;
         }
+
         public void EnterAim()
         {
+            
             //同步瞄准相机和自由相机的瞄准角度
             aimingCamera.m_XAxis.Value = freeLookCamera.m_XAxis.Value;
             aimingCamera.m_YAxis.Value = freeLookCamera.m_YAxis.Value;
+            //启用瞄准约束
+            currentPlayerModel.rightHandAimConstraint.weight = 1;
+            currentPlayerModel.bodyAimConstraint.weight = 1;
+            currentPlayerModel.rightHandConstraint.weight = 0;
             //设置优先级
             freeLookCamera.Priority = 0;
             aimingCamera.Priority = 100;
+        }
+/// <summary>
+/// 抖动屏幕
+/// </summary>
+        public void ShakeCamera()
+        {
+           _impulseSource.GenerateImpulse(); 
         }
     }
 }

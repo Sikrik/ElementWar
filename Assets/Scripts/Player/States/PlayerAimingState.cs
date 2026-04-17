@@ -28,10 +28,31 @@ namespace Player.States
             playerModel.PlayerStateAnimation("Aiming");
             if (IsBeControl())
             {
+                UpdateAimingTarget();
                 playerController.EnterAim();
             }
             playerController.EnterAim();
         }
+        /// <summary>
+        /// 更新瞄准位置，从屏幕中心发射射线确认瞄准位置
+        /// </summary>
+        private void UpdateAimingTarget()
+        {
+            //发射射线
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            RaycastHit hit;
+            //如果射线击中了物体
+            if (Physics.Raycast(ray,out hit,playerController.maxRayDistance,playerController.aimLayerMask))
+            {
+                //更新瞄准目标的位置
+                playerController.aimTarget.position = hit.point;
+            }
+            else
+            {
+                playerController.aimTarget.position =ray.origin+ray.direction*playerController.maxRayDistance;
+            }
+        }
+
         public override void Exit()
         {
             base.Exit();
@@ -44,16 +65,31 @@ namespace Player.States
             if(IsBeControl()){
                 //让模型旋转至摄像机方向
                 if (Camera.main != null)
+                {
                     playerModel.transform.rotation =
                         Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+                    UpdateAimingTarget();
+                }
 
                 #region 玩家松开鼠标右键后恢复正常状态
 
-            if (!playerController._isAiming)
+            if (!playerController._isAiming&& !playerController._isFire)
             {
                 playerModel.SwitchState(PlayerState.Idle);
+                return;
             }
             
+
+                #endregion
+
+                #region 开火监听
+
+                if (playerController._isFire)
+                {
+                    playerModel.weapon.Fire(playerController.aimTarget.position);
+                    playerController.ShakeCamera();//屏幕抖动
+                }
+
 
                 #endregion
             

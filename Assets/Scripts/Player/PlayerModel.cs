@@ -1,6 +1,7 @@
 using System;
 using Player.States;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using Utils;
 
 namespace Player
@@ -21,7 +22,10 @@ namespace Player
     /// 负责管理玩家的动画、状态机和物理相关参数
     /// </summary>
     public class PlayerModel : MonoBehaviour, IStateMachineOwner
-    {   
+    {
+        [Tooltip("角色武器")]
+        public PlayerWeapon weapon;
+        
         [HideInInspector]
         public Animator animator;
         public CharacterController cc;
@@ -29,6 +33,9 @@ namespace Player
         private StateMachine _stateMachine;
         private PlayerState _currentState;
         
+        public TwoBoneIKConstraint rightHandConstraint;//正常状态下的右手约束
+        public MultiAimConstraint rightHandAimConstraint;
+        public MultiAimConstraint bodyAimConstraint;
         #region 垂直速度参数
         [Tooltip("重力加速度")]
         public float gravity = -9.81f;
