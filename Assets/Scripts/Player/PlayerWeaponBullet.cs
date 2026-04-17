@@ -12,7 +12,7 @@ namespace Player
         [Tooltip("推力")]
         public float flyPower = 30f;
         
-        [Tooltip("存货时间")]
+        [Tooltip("存活时间")]
         public float lifeTime = 10f;
 
         private void Awake()

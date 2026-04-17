@@ -23,11 +23,11 @@ namespace Player.States
         public override void Enter()
         {
             base.Enter();
-            playerModel.PlayerStateAnimation("Aiming");
+            PlayerModel.PlayerStateAnimation("Aiming");
             if (IsBeControl())
             {
-                playerModel.UpdateAimingTarget();
-                playerController.EnterAim();
+                PlayerModel.UpdateAimingTarget();
+                PlayerController.EnterAim();
             }
         }
         
@@ -38,7 +38,7 @@ namespace Player.States
         {
             base.Exit();
             if(IsBeControl())
-                playerController.ExitAim();
+                PlayerController.ExitAim();
         }
         
         public override void Update()
@@ -48,32 +48,32 @@ namespace Player.States
                 //让模型旋转至摄像机方向
                 if (Camera.main != null)
                 {
-                    playerModel.transform.rotation =
+                    PlayerModel.transform.rotation =
                         Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
-                    playerModel.UpdateAimingTarget();
+                    PlayerModel.UpdateAimingTarget();
                 }
                 
                 #region 玩家松开鼠标右键后恢复正常状态
-                if (!playerModel.IsAiming&& !playerModel.IsFire)
+                if (!PlayerModel.IsAiming&& !PlayerModel.IsFire)
                 {
-                    playerModel.SwitchState(PlayerState.Idle);
+                    PlayerModel.SwitchState(PlayerState.Idle);
                     return;
                 }
                 #endregion
                 
                 #region 开火监听
-                if (playerModel.IsFire)
+                if (PlayerModel.IsFire)
                 {
-                    playerModel.weapon.Fire(playerModel.aimTarget.position);
-                    playerController.ShakeCamera();//屏幕抖动
+                    PlayerModel.weapon.Fire(PlayerModel.aimTarget.position);
+                    PlayerController.ShakeCamera();//屏幕抖动
                 }
                 #endregion
             
                 #region 处理角色的移动输入
-                _aimingX = Mathf.Lerp(_aimingX, playerModel.MoveInput.x, _transitionSpeed * Time.deltaTime);
-                _aimingY = Mathf.Lerp(_aimingY, playerModel.MoveInput.y, _transitionSpeed * Time.deltaTime);
-                playerModel.animator.SetFloat(_aimingXHash, _aimingX);
-                playerModel.animator.SetFloat(_aimingYHash, _aimingY);
+                _aimingX = Mathf.Lerp(_aimingX, PlayerModel.MoveInput.x, _transitionSpeed * Time.deltaTime);
+                _aimingY = Mathf.Lerp(_aimingY, PlayerModel.MoveInput.y, _transitionSpeed * Time.deltaTime);
+                PlayerModel.animator.SetFloat(_aimingXHash, _aimingX);
+                PlayerModel.animator.SetFloat(_aimingYHash, _aimingY);
                 #endregion
             }
         }

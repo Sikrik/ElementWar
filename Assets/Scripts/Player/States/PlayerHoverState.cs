@@ -12,7 +12,7 @@
         public override void Enter()
         {
             base.Enter();
-            playerModel.PlayerStateAnimation("Hover");
+            PlayerModel.PlayerStateAnimation("Hover");
         }
         
         /// <summary>
@@ -22,8 +22,8 @@
         {
             base.Update();
             #region 检测玩家是否在地面上
-            if(playerModel.cc.isGrounded)
-                playerModel.SwitchState(PlayerState.Idle);
+            if(PlayerModel.cc.isGrounded)
+                PlayerModel.SwitchState(PlayerState.Idle);
             #endregion
         }
     }

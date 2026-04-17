@@ -11,16 +11,16 @@ namespace Player
     /// </summary>
     public class PlayerStateBase : StateBase
     {
-        protected PlayerController playerController;
-        protected PlayerModel playerModel;
+        protected PlayerController PlayerController;
+        protected PlayerModel PlayerModel;
         
         /// <summary>
         /// 初始化状态，获取玩家控制器和模型引用
         /// </summary>
         public override void Init(IStateMachineOwner owner)
         {
-            playerController = PlayerController.INSTANCE;
-            playerModel = (PlayerModel)owner;
+            PlayerController = PlayerController.INSTANCE;
+            PlayerModel = (PlayerModel)owner;
         }
         
         /// <summary>
@@ -37,25 +37,25 @@ namespace Player
         public override void Update()
         {
             #region 重力计算
-            if (!playerModel.cc.isGrounded)
+            if (!PlayerModel.cc.isGrounded)
             {
                 // 空中状态：累加重力加速度
-                playerModel.verticalSpeed += playerModel.gravity * Time.deltaTime;
-                if (playerModel.IsHover())
-                    playerModel.SwitchState(PlayerState.Hover);
+                PlayerModel.verticalSpeed += PlayerModel.gravity * Time.deltaTime;
+                if (PlayerModel.IsHover())
+                    PlayerModel.SwitchState(PlayerState.Hover);
             }
             else
             {
                 // 地面状态：重置垂直速度
-                playerModel.verticalSpeed = playerModel.gravity * Time.deltaTime;
+                PlayerModel.verticalSpeed = PlayerModel.gravity * Time.deltaTime;
             }
             #endregion
             
             #region 瞄准监听
             // 添加条件：如果你已经处于瞄准状态，就不要再重复请求切换了
-            if (playerModel.IsAiming && !(this is Player.States.PlayerAimingState) || playerModel.IsFire)
+            if (PlayerModel.IsAiming && !(this is Player.States.PlayerAimingState) || PlayerModel.IsFire)
             {
-                playerModel.SwitchState(PlayerState.Aiming);
+                PlayerModel.SwitchState(PlayerState.Aiming);
             }
             #endregion
         }
@@ -82,7 +82,7 @@ namespace Player
         /// <returns>如果当前模型是控制器管理的模型则返回 true</returns>
         public bool IsBeControl()
         {
-            return playerModel == playerController.currentPlayerModel;
+            return PlayerModel == PlayerController.currentPlayerModel;
         }
         
         /// <summary>
@@ -90,8 +90,8 @@ namespace Player
         /// </summary>
         public void SwitchToHover()
         {
-            playerModel.verticalSpeed = Mathf.Sqrt(-2 * playerModel.gravity * playerModel.jumpHeight);
-            playerModel.SwitchState(PlayerState.Hover);
+            PlayerModel.verticalSpeed = Mathf.Sqrt(-2 * PlayerModel.gravity * PlayerModel.jumpHeight);
+            PlayerModel.SwitchState(PlayerState.Hover);
         }
     }
 }

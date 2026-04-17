@@ -1,4 +1,4 @@
-﻿using Base;
+﻿
 using UnityEngine;
 using Utils;
 
@@ -26,7 +26,7 @@ namespace Player.States
         public override void Enter()
         {
             base.Enter();
-            playerModel.PlayerStateAnimation("Move");
+            PlayerModel.PlayerStateAnimation("Move");
         }
         
         public override void Update()
@@ -35,15 +35,15 @@ namespace Player.States
             if (IsBeControl())
             {
                 #region 监听待机状态
-                if (playerModel.MoveInput.magnitude == 0)
+                if (PlayerModel.MoveInput.magnitude == 0)
                 {
-                    playerModel.SwitchState(PlayerState.Idle);
+                    PlayerModel.SwitchState(PlayerState.Idle);
                     return;
                 }
                 #endregion
                 
                 #region 处理跳跃状态
-                if (playerModel.IsJumping)
+                if (PlayerModel.IsJumping)
                 {
                     SwitchToHover();
                     return;
@@ -51,7 +51,7 @@ namespace Player.States
                 #endregion
                 
                 #region 处理移动速度
-                if (playerModel.IsSprint)
+                if (PlayerModel.IsSprint)
                 {
                     _moveBlend = Mathf.Lerp(_moveBlend, _sprintThreshold, _transitionSpeed * Time.deltaTime);
                 }
@@ -59,12 +59,12 @@ namespace Player.States
                 {
                     _moveBlend = Mathf.Lerp(_moveBlend, _runThreshold, _transitionSpeed * Time.deltaTime);
                 }
-                playerModel.animator.SetFloat(_moveBlendHash,_moveBlend);
+                PlayerModel.animator.SetFloat(_moveBlendHash,_moveBlend);
                 #endregion
                 
                 #region 处理方向
-                float rad = Mathf.Atan2(playerModel.localMovement.x, playerModel.localMovement.z);
-                playerModel.transform.Rotate(0,rad * playerModel.rotationSpeed * Time.deltaTime,0);
+                float rad = Mathf.Atan2(PlayerModel.localMovement.x, PlayerModel.localMovement.z);
+                PlayerModel.transform.Rotate(0,rad * PlayerModel.rotationSpeed * Time.deltaTime,0);
                 #endregion
             }
         }

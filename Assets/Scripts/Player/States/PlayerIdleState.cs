@@ -16,7 +16,7 @@ namespace Player.States
         public override void Enter()
         {
             base.Enter();
-            playerModel.PlayerStateAnimation("Idle");//播放待机动画
+            PlayerModel.PlayerStateAnimation("Idle");//播放待机动画
         }
         
         /// <summary>
@@ -29,12 +29,12 @@ namespace Player.States
             if (IsBeControl())
             {
                 #region 移动状态监听
-                if (playerModel.MoveInput.magnitude != 0)
-                    playerModel.SwitchState(PlayerState.Move);//切换到移动状态
+                if (PlayerModel.MoveInput.magnitude != 0)
+                    PlayerModel.SwitchState(PlayerState.Move);//切换到移动状态
                 #endregion
                 
                 #region 悬空状态监听
-                if (playerModel.IsJumping)
+                if (PlayerModel.IsJumping)
                     SwitchToHover();//切换到悬空状态
                 #endregion
             }

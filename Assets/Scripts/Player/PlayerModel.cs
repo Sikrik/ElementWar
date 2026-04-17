@@ -1,4 +1,4 @@
-using System;
+
 using Player.States;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -193,17 +193,20 @@ namespace Player
         public void UpdateAimingTarget()
         {
             //发射射线
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            RaycastHit hit;
-            //如果射线击中了物体
-            if (Physics.Raycast(ray,out hit,maxRayDistance,aimLayerMask))
+            if (Camera.main != null)
             {
-                //更新瞄准目标的位置
-                aimTarget.position = hit.point;
-            }
-            else
-            {
-                aimTarget.position =ray.origin+ray.direction*maxRayDistance;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+                RaycastHit hit;
+                //如果射线击中了物体
+                if (Physics.Raycast(ray,out hit,maxRayDistance,aimLayerMask))
+                {
+                    //更新瞄准目标的位置
+                    aimTarget.position = hit.point;
+                }
+                else
+                {
+                    aimTarget.position =ray.origin+ray.direction*maxRayDistance;
+                }
             }
         }
         
