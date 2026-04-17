@@ -48,9 +48,23 @@ namespace Player.States
                 //让模型旋转至摄像机方向
                 if (Camera.main != null)
                 {
-                    PlayerModel.transform.rotation =
-                        Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+                    // 1. 优先发射射线，更新真实的瞄准目标点
                     PlayerModel.UpdateAimingTarget();
+    
+                    // 2. 计算从人物自身到瞄准目标点的方向向量
+                    Vector3 aimDirection = PlayerModel.aimTarget.position - PlayerModel.transform.position;
+                    aimDirection.y = 0; // 忽略Y轴高度差，防止人物模型发生上下倾斜
+    
+                    // 3. 让模型旋转至真实的瞄准方向
+                    if (aimDirection != Vector3.zero)
+                    {
+                        // 采用 Slerp 平滑过渡转向，15f 转向速度
+                        PlayerModel.transform.rotation = Quaternion.Slerp(
+                            PlayerModel.transform.rotation, 
+                            Quaternion.LookRotation(aimDirection), 
+                            Time.deltaTime * 15f
+                        );
+                    }
                 }
                 
                 #region 玩家松开鼠标右键后恢复正常状态
